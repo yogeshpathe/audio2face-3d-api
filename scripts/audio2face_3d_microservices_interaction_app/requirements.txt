@@ -5,3 +5,10 @@ protobuf==4.24.1
 PyYAML==6.0.1
 pandas==2.2.2
 matplotlib==3.9.1
+"fastapi[all]"
+google-generativeai
+nvidia-ace
+pyyaml
+gTTS
+pydub
+
