@@ -9,7 +9,7 @@ grpcio==1.71.0
 grpclib==0.4.7
 gTTS==2.5.4
 numpy==2.0.2
-nvidia-ace==1.2.0
+nvidia-ace==1.0.0
 pandas==2.3.0
 pydantic==2.11.5
 pydub==0.25.1
