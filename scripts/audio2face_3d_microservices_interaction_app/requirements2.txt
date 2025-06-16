@@ -1,0 +1,7 @@
+fastapi[all]
+google-cloud-texttospeech
+google-generativeai
+pydub
+gTTS
+
+
