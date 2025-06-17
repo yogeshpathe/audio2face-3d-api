@@ -256,7 +256,7 @@ def create_grpc_channel(server_address, secure_mode=None, root_cert_path=None, c
 # --- Core Inference and Health Check Logic ---
 
 async def process_a2f_inference(audio_bytes: bytes, config_bytes: bytes):
-    grpc_url = os.getenv("A2F_NIM_URL", "34.67.4.120:52000")
+    grpc_url = os.getenv("A2F_NIM_URL", "localhost:52000")
     secure_mode, root_cert, client_cert, client_key = (os.getenv("SECURE_MODE", "disabled").lower(), os.getenv("ROOT_CERT_PATH"),
                                                        os.getenv("CLIENT_CERT_PATH"), os.getenv("CLIENT_KEY_PATH"))
     try:
@@ -300,11 +300,11 @@ async def check_health(channel: grpc.aio.Channel):
 
 # --- FastAPI Endpoints ---
 
-@app.get("/", summary="Welcome Endpoint", include_in_schema=False)
+@app.get("/api", summary="Welcome Endpoint", include_in_schema=False)
 async def root():
-    return {"message": "Welcome to the A2F Conversational Client API. Use /docs for details."}
+    return {"message": "Welcome to the A2F Conversational Client API."}
 
-@app.post("/inference-from-prompt", summary="Run Full Conversational Turn from a Prompt", tags=["Inference"])
+@app.post("/api/inference-from-prompt", summary="Run Full Conversational Turn from a Prompt", tags=["Inference"])
 async def run_inference_from_prompt(
     prompt: str = Form(..., description="The user prompt to send to the Gemini model."),
     config_file: UploadFile = File(..., description="A YAML configuration file for A2F processing.")
@@ -335,7 +335,7 @@ async def run_inference_from_prompt(
     
     return inference_result
 
-@app.post("/inference-from-text", summary="Run A2F Inference from Text", tags=["Inference"])
+@app.post("/api/inference-from-text", summary="Run A2F Inference from Text", tags=["Inference"])
 async def run_inference_from_text(
     text: str = Form(..., description="The text to convert to speech and animate."),
     config_file: UploadFile = File(..., description="A YAML configuration file for A2F processing.")
@@ -349,7 +349,7 @@ async def run_inference_from_text(
     config_bytes = await config_file.read()
     return await process_a2f_inference(audio_bytes, config_bytes)
 
-@app.post("/inference-from-file", summary="Run A2F Inference from Audio File", tags=["Inference"])
+@app.post("/api/inference-from-file", summary="Run A2F Inference from Audio File", tags=["Inference"])
 async def run_inference_from_file(
     audio_file: UploadFile = File(..., description="A 16-bit mono PCM WAV audio file."),
     config_file: UploadFile = File(..., description="A YAML configuration file for A2F processing.")
@@ -362,9 +362,9 @@ async def run_inference_from_file(
     config_bytes = await config_file.read()
     return await process_a2f_inference(audio_bytes, config_bytes)
 
-@app.get("/health", summary="Check Backend Service Health", tags=["Health"])
+@app.get("/api/health", summary="Check Backend Service Health", tags=["Health"])
 async def health_check():
-    grpc_url, secure_mode = os.getenv("A2F_NIM_URL", "34.67.4.120:52000"), os.getenv("SECURE_MODE", "disabled").lower()
+    grpc_url, secure_mode = os.getenv("A2F_NIM_URL", "localhost:52000"), os.getenv("SECURE_MODE", "disabled").lower()
     root_cert, client_cert, client_key = os.getenv("ROOT_CERT_PATH"), os.getenv("CLIENT_CERT_PATH"), os.getenv("CLIENT_KEY_PATH")
     try:
         channel = create_grpc_channel(grpc_url, secure_mode, root_cert, client_cert, client_key)
@@ -377,5 +377,4 @@ async def health_check():
 if __name__ == "__main__":
     print("Starting FastAPI server for A2F Conversational Client...")
     print("Use 'uvicorn main:app --reload' to run for development.")
-    print("API documentation available at http://34.67.4.120:8000/docs")
     uvicorn.run(app, host="0.0.0.0", port=8000)
