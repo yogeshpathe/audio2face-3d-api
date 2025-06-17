@@ -87,7 +87,7 @@ async def generate_response_from_gemini(user_prompt: str) -> str:
     Generates a short, polite customer service response using the Gemini API.
     Requires the GEMINI_API_KEY environment variable to be set.
     """
-    api_key = "AIzaSyDSDFoUAUeWltnn-PeM1Gvvr_eklaFR6H4"
+    api_key = ""
     if not api_key:
         raise HTTPException(
             status_code=500,
