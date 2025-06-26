@@ -2,7 +2,7 @@ import requests
 import os
 
 # API server URL
-BASE_URL = "http://127.0.0.1:8000"
+BASE_URL = "https://a2f3d.cxhope.ai"
 
 # Test file details
 TEST_FILE_NAME = "test_file.json"
