@@ -56,6 +56,7 @@ from gtts import gTTS
 from pydub import AudioSegment
 from fastapi.middleware.cors import CORSMiddleware
 import google.generativeai as genai
+from addons import router as gcp_router
 
 
 # --- FastAPI App Initialization ---
@@ -68,11 +69,13 @@ app = FastAPI(
 # --- Middleware Setup ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust as needed for production
+    allow_origins=["*","http://localhost:3000","http://localhost:3005"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(gcp_router)
 
 # --- Original Constants and Configuration ---
 BITS_PER_BYTE = 8
